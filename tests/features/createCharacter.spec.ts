@@ -3,7 +3,9 @@ import { getToken } from "../client/token-client";
 import { createCharacter } from "../client/character-client";
 import {
   RANGER_ATTRIBUTES,
+  RANGER_BACKGROUND_EQUIPMENT,
   RANGER_CHAR,
+  RANGER_EQUIPMENT,
   RANGER_SKILLS,
 } from "../data/create-character-data";
 
@@ -69,5 +71,33 @@ test.describe.serial("Create Sylvara The Ranger", () => {
     expect(updatedCharacter.skillProficiencies).toEqual(
       expect.arrayContaining(RANGER_SKILLS.skillProficiencies),
     );
+  });
+
+  test("Add class equipment to the Character", async ({ request }) => {
+    const equipmentResponse = await request.post(
+      `/api/characters/${characterId}/equipment/class-choice`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: RANGER_EQUIPMENT,
+      },
+    );
+    expect(equipmentResponse.status()).toBe(200);
+  });
+
+  test("Add background equipment to the Character", async ({ request }) => {
+    const equipmentResponse = await request.post(
+      `/api/characters/${characterId}/equipment/background-choice`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: RANGER_BACKGROUND_EQUIPMENT,
+      },
+    );
+    expect(equipmentResponse.status()).toBe(200);
   });
 });

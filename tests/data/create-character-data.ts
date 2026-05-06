@@ -38,3 +38,11 @@ export const RANGER_ATTRIBUTES = {
 export const RANGER_SKILLS = {
   skillProficiencies: ["Athletics", "Animal Handling", "Nature"],
 };
+
+export const RANGER_EQUIPMENT = {
+  optionIndex: 0,
+};
+
+export const RANGER_BACKGROUND_EQUIPMENT = {
+  optionIndex: 0,
+};
