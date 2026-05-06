@@ -1,7 +1,11 @@
 import { expect, request, test } from "@playwright/test";
 import { getToken } from "../client/token-client";
 import { createCharacter } from "../client/character-client";
-import { RANGER_ATTRIBUTES, RANGER_CHAR } from "../data/create-character-data";
+import {
+  RANGER_ATTRIBUTES,
+  RANGER_CHAR,
+  RANGER_SKILLS,
+} from "../data/create-character-data";
 
 let token = "";
 let characterId = "";
@@ -47,5 +51,23 @@ test.describe.serial("Create Sylvara The Ranger", () => {
     expect(updatedCharacter.abilityScores.final.INT).toEqual(10);
     expect(updatedCharacter.abilityScores.final.WIS).toEqual(15);
     expect(updatedCharacter.abilityScores.final.CHA).toEqual(10);
+  });
+
+  test("Add skills to the Character", async ({ request }) => {
+    const skillsResponse = await request.patch(
+      `/api/characters/${characterId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: RANGER_SKILLS,
+      },
+    );
+    expect(skillsResponse.status()).toBe(200);
+    const updatedCharacter = await skillsResponse.json();
+    expect(updatedCharacter.skillProficiencies).toEqual(
+      expect.arrayContaining(RANGER_SKILLS.skillProficiencies),
+    );
   });
 });

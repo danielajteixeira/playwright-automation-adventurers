@@ -34,3 +34,7 @@ export const RANGER_ATTRIBUTES = {
     },
   },
 };
+
+export const RANGER_SKILLS = {
+  skillProficiencies: ["Athletics", "Animal Handling", "Nature"],
+};
