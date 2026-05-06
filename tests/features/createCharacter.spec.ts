@@ -1,24 +1,51 @@
-import { expect, request, test} from '@playwright/test';
-import { getToken } from '../client/token-client';
-import { FIGHTER_CHAR } from '../data/create-character-data';
-import { createCharacter } from '../client/character-client';
+import { expect, request, test } from "@playwright/test";
+import { getToken } from "../client/token-client";
+import { createCharacter } from "../client/character-client";
+import { RANGER_ATTRIBUTES, RANGER_CHAR } from "../data/create-character-data";
 
-let token = '';
+let token = "";
+let characterId = "";
 
-test.describe.serial('Create Daniela The Fighter',() => {
-    test.beforeAll(async ({ request }) => {
-        token = await getToken(request);
+test.describe.serial("Create Sylvara The Ranger", () => {
+  test.beforeAll(async ({ request }) => {
+    token = await getToken(request);
 
-        expect(token).not.toBeNull();
-    });
+    expect(token).not.toBeNull();
+  });
 
-    test('Create Character Draft', async ({ request }) => {
+  test("Create Character Draft", async ({ request }) => {
     const characterResponse = await createCharacter(
-        request,
-        token,
-        FIGHTER_CHAR
+      request,
+      token,
+      RANGER_CHAR,
     );
     const character = await characterResponse.json();
+    characterId = character.id;
     console.log(characterResponse);
-});
+
+    expect(characterResponse.status()).toBe(201);
+    expect(character.name).toBe(RANGER_CHAR.name);
+    expect(character.classId).toBe(RANGER_CHAR.classId);
+    expect(character.speciesId).toBe(RANGER_CHAR.speciesId);
+    expect(character.backgroundId).toBe(RANGER_CHAR.backgroundId);
+  });
+
+  test("Add attributes to Character Draft", async ({ request }) => {
+    const response = await request.patch(`/api/characters/${characterId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: RANGER_ATTRIBUTES,
+    });
+
+    expect(response.status()).toBe(200);
+    const updatedCharacter = await response.json();
+    expect(updatedCharacter.abilityScores.final.STR).toEqual(10);
+    expect(updatedCharacter.abilityScores.final.DEX).toEqual(17);
+    expect(updatedCharacter.abilityScores.final.CON).toEqual(12);
+    expect(updatedCharacter.abilityScores.final.INT).toEqual(10);
+    expect(updatedCharacter.abilityScores.final.WIS).toEqual(15);
+    expect(updatedCharacter.abilityScores.final.CHA).toEqual(10);
+  });
 });
