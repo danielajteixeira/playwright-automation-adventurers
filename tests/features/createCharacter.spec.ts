@@ -88,7 +88,7 @@ test.describe.serial("Create Sylvara The Ranger", () => {
   });
 
   test("Add background equipment to the Character", async ({ request }) => {
-    const equipmentResponse = await request.post(
+    const backgroundEquipmentResponse = await request.post(
       `/api/characters/${characterId}/equipment/background-choice`,
       {
         headers: {
@@ -98,6 +98,45 @@ test.describe.serial("Create Sylvara The Ranger", () => {
         data: RANGER_BACKGROUND_EQUIPMENT,
       },
     );
-    expect(equipmentResponse.status()).toBe(200);
+
+    expect(backgroundEquipmentResponse.status()).toBe(200);
+    const backgroundEquipment = await backgroundEquipmentResponse.json();
+  });
+
+  test("Spell Options", async ({ request }) => {
+    const spelloptions = await request.get(
+      `/api/characters/${characterId}/spell-options`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+  });
+
+  test("Spell Selection", async ({ request }) => {
+    const spellselection = await request.get(
+      `/api/characters/${characterId}/spell-selection`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+  });
+
+  test("Character Spells", async ({ request }) => {
+    const spellsresponse = await request.put(
+      `/api/characters/${characterId}/spells`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: {
+          spellIds: [89, 92],
+        },
+      },
+    );
   });
 });

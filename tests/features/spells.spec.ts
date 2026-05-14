@@ -1,13 +1,12 @@
 import { test, expect } from "@playwright/test";
 
-test("Classes List", async ({ request }) => {
+test("Get Spell Options", async ({ request }) => {
   const response = await request.get(
-    "https://adventurers-guild-api.vercel.app/api/classes",
+    `https://adventurers-guild-api.vercel.app/api/spells`,
   );
 
   expect(response.status()).toBe(200);
 
   const responseBody = await response.json();
-
-  return console.log(responseBody);
+  console.log(responseBody);
 });
