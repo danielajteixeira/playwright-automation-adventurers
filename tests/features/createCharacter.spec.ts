@@ -34,6 +34,9 @@ test.describe.serial("Create Sylvara The Ranger", () => {
     expect(character.classId).toBe(RANGER_CHAR.classId);
     expect(character.speciesId).toBe(RANGER_CHAR.speciesId);
     expect(character.backgroundId).toBe(RANGER_CHAR.backgroundId);
+    expect(character.status).toBe("in_progress");
+    expect(character.level).toBe(1);
+    expect(character.abilityScores).toBeNull();
   });
 
   test("Add attributes to Character Draft", async ({ request }) => {
@@ -53,6 +56,13 @@ test.describe.serial("Create Sylvara The Ranger", () => {
     expect(updatedCharacter.abilityScores.final.INT).toEqual(10);
     expect(updatedCharacter.abilityScores.final.WIS).toEqual(15);
     expect(updatedCharacter.abilityScores.final.CHA).toEqual(10);
+
+    expect(updatedCharacter.savingThrows[0].isProficient).toBeTruthy();
+    expect(updatedCharacter.savingThrows[1].isProficient).toBeTruthy();
+    expect(updatedCharacter.savingThrows[2].isProficient).toBeFalsy();
+    expect(updatedCharacter.savingThrows[3].isProficient).toBeFalsy();
+    expect(updatedCharacter.savingThrows[4].isProficient).toBeFalsy();
+    expect(updatedCharacter.savingThrows[5].isProficient).toBeFalsy();
   });
 
   test("Add skills to the Character", async ({ request }) => {
@@ -71,6 +81,8 @@ test.describe.serial("Create Sylvara The Ranger", () => {
     expect(updatedCharacter.skillProficiencies).toEqual(
       expect.arrayContaining(RANGER_SKILLS.skillProficiencies),
     );
+    expect(updatedCharacter.skills[0].isProficient).toBeTruthy();
+    expect(updatedCharacter.status).toBe("in_progress");
   });
 
   test("Add class equipment to the Character", async ({ request }) => {
@@ -138,5 +150,8 @@ test.describe.serial("Create Sylvara The Ranger", () => {
         },
       },
     );
+
+    const completedCharacter = await spellsresponse.json();
+    expect(completedCharacter.status).toBe("complete");
   });
 });
